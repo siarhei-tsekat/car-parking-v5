@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-
 @Entity
 @Table(name = "reservations")
 public class Reservation {
@@ -36,17 +35,6 @@ public class Reservation {
     private BigDecimal price;
 
     public Reservation() {
-    }
-
-    public static Reservation buildReservation(String reservationId, String userId, String spotId, String startTime, String endTime, String price) {
-        Reservation r = new Reservation();
-        r.setReservationId(reservationId);
-        r.setUserId(userId);
-        r.setSpotId(spotId);
-        r.setStartTime(Date.from(LocalDateTime.parse(startTime).toInstant(ZoneOffset.UTC)));
-        r.setEndTime(Date.from(LocalDateTime.parse(endTime).toInstant(ZoneOffset.UTC)));
-        r.setPrice(new BigDecimal(price));
-        return r;
     }
 
     public long getId() {
@@ -103,5 +91,16 @@ public class Reservation {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+    //todo: add validation of passed parameters
+    public static Reservation buildReservation(String reservationId, String userId, String spotId, String startTime, String endTime, String price) {
+        Reservation r = new Reservation();
+        r.setReservationId(reservationId);
+        r.setUserId(userId);
+        r.setSpotId(spotId);
+        r.setStartTime(Date.from(LocalDateTime.parse(startTime).toInstant(ZoneOffset.UTC)));
+        r.setEndTime(Date.from(LocalDateTime.parse(endTime).toInstant(ZoneOffset.UTC)));
+        r.setPrice(new BigDecimal(price));
+        return r;
     }
 }
