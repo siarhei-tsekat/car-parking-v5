@@ -11,4 +11,6 @@ public interface ReservationService {
     String reserveSpot(String userId, String spotId, String startTime);
 
     List<Reservation> findAll();
+
+    List<Reservation> findByUserId(String userId);
 }

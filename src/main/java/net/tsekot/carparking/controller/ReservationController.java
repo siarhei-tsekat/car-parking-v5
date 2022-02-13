@@ -21,8 +21,12 @@ public class ReservationController {
     }
 
     @GetMapping(path = "/reservation")
-    public List<Reservation> getAll() {
-        return reservationService.findAll();
+    public List<Reservation> getAll(@RequestParam(required = false) String userId) {
+        if (userId == null || userId.isEmpty()) {
+            return reservationService.findAll();
+        } else {
+            return reservationService.findByUserId(userId);
+        }
     }
 
     @PostMapping(path = "/reservation")
