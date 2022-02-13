@@ -13,4 +13,6 @@ public interface ReservationService {
     List<Reservation> findAll();
 
     List<Reservation> findByUserId(String userId);
+
+    boolean cancelReservation(String userId, String reservationId);
 }

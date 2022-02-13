@@ -3,10 +3,9 @@ package net.tsekot.carparking.controller;
 import net.tsekot.carparking.domain.Reservation;
 import net.tsekot.carparking.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,10 +32,22 @@ public class ReservationController {
     public ReservationCreated reserveSpot(@RequestParam String userId,
                                           @RequestParam String spotId,
                                           @RequestParam String startTime) {
-
+        //todo: add validation
         String reservationId = reservationService.reserveSpot(userId, spotId, startTime);
 
         return new ReservationCreated(reservationId);
+    }
+
+    @DeleteMapping(path = "/reservation/cancel")
+    public ResponseEntity<HttpStatus> cancelReservation(@RequestParam String userId,
+                                                        @RequestParam String reservationId) {
+
+        if (userId != null && !userId.isEmpty() && reservationId != null && !reservationId.isEmpty()) {
+            boolean res = reservationService.cancelReservation(userId, reservationId);
+            return res ? ResponseEntity.status(HttpStatus.OK).build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     class ReservationCreated {

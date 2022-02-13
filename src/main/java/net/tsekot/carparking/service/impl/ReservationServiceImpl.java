@@ -23,6 +23,7 @@ public class ReservationServiceImpl implements ReservationService {
         this.entityManagerFactory = entityManagerFactory;
     }
 
+    @Override
     public String reserveSpot(String userId, String spotId, String startTime) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
@@ -55,39 +56,42 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<Reservation> findAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        try {
 
-            String query = "select r from Reservation r";
-            TypedQuery<Reservation> res = entityManager.createQuery(query, Reservation.class);
-            List<Reservation> resultList = res.getResultList();
-            entityManager.getTransaction().commit();
-            return resultList;
-
-        } catch (Exception e) {
-            entityManager.getTransaction().rollback();
-            throw new DomainException(e);
-        }
+        String query = "select r from Reservation r";
+        TypedQuery<Reservation> res = entityManager.createQuery(query, Reservation.class);
+        return res.getResultList();
     }
 
     @Override
     public List<Reservation> findByUserId(String userId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        String query = "select r from Reservation r where r.userId = :userId";
+        TypedQuery<Reservation> tQuery = entityManager.createQuery(query, Reservation.class);
+        tQuery.setParameter("userId", userId);
+
+        return tQuery.getResultList();
+    }
+
+    @Override
+    public boolean cancelReservation(String userId, String reservationId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
+        String query = "select r from Reservation r where reservationId =:reservationId and userId =:userId";
 
         try {
 
-            String query = "select r from Reservation r where r.userId = :userId";
             TypedQuery<Reservation> tQuery = entityManager.createQuery(query, Reservation.class);
+            tQuery.setParameter("reservationId", reservationId);
             tQuery.setParameter("userId", userId);
-            List<Reservation> res = tQuery.getResultList();
+            Reservation singleResult = tQuery.getSingleResult();
+            entityManager.remove(singleResult);
             entityManager.getTransaction().commit();
-            return res;
+            return true;
 
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
             throw new DomainException(e);
         }
-
     }
 }

@@ -1,7 +1,6 @@
 package net.tsekot.carparking.controller;
 
 import net.tsekot.carparking.domain.Spot;
-import net.tsekot.carparking.domain.SpotType;
 import net.tsekot.carparking.service.SpotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +25,6 @@ public class SpotController {
         if (spotType == null || spotType.isEmpty()) {
             return spotService.findAll();
         }
-        return spotService.getBySpotType(SpotType.fromString(spotType));
+        return spotService.getBySpotType(spotType);
     }
 }
